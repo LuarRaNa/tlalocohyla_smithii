@@ -1,0 +1,547 @@
+units:
+  # Parameters
+  # ==========
+  kx: cx              # Key spacing horizontal
+  ky: cy              # Key spacing vertical
+  sf: 16              # Switch footprint (square)
+  mirror_distance: 25 # Mirror distance
+  angle: 20           # Angle between halves
+  pinky_splay: 5      # Degrees of splay between pinky and ring columns
+  ring_splay: 0       # Degrees of splay between ring and index columns
+  visual_x: cx        # Visual representation of keycaps horizontal
+  visual_y: cy        # Visual representation of keycaps vertical
+
+points:
+  rotate: -angle + pinky_splay + ring_splay
+  mirror:
+    ref: matrix_inner_top
+    shift: [0.5sf, 0.5sf]
+    distance: mirror_distance
+  zones.matrix:
+    key:
+      tags:
+        matrix: true
+      footprints:
+        - type: choc
+          nets:
+            from: =row_net
+            to: =colrow
+          params:
+            keycaps: true
+        - type: diode
+          anchor:
+            shift: [0, -4.7]
+            rotate: 180
+          nets:
+            from: =colrow
+            to: =column_net
+          params:
+            via_in_pad: true
+            through_hole: false        
+    rows:
+      bottom.padding: ky
+      home.padding: ky
+      top.padding: ky
+    columns.pinky:
+      spread: kx
+      rows:
+        bottom.skip: true
+        home:
+          bind: [0.5ky,0.5kx,0,0]
+          row_net: P2
+          column_net: P6
+        top:
+          bind: [0,0.5kx,0.5ky,0]
+          row_net: P0
+          column_net: P6
+        home.mirror:
+          row_net: P3
+          column_net: P10
+        top.mirror:
+          row_net: P1
+          column_net: P10
+    columns.ring:
+      spread: kx
+      stagger: 2/3ky
+      rotate: -pinky_splay
+      origin: [0,-3]
+      rows:
+        bottom:
+          bind: [0.5ky,0,0,0]
+          row_net: P4
+          column_net: P6
+        home:
+          bind: [0,0.5kx,0,0]
+          row_net: P3
+          column_net: P6
+        top:
+          bind: [0,0.5kx,0.5ky,0]
+          row_net: P1
+          column_net: P6
+        bottom.mirror:
+          row_net: P5
+          column_net: P9
+        home.mirror:
+          row_net: P2
+          column_net: P10
+        top.mirror:
+          row_net: P0
+          column_net: P10
+    columns.middle:
+      spread: kx
+      stagger: 0.25ky
+      rotate: -ring_splay
+      origin: [0,-8]
+      rows:
+        bottom:
+          bind: [0.5ky,0.5kx,0,0.5kx]
+          row_net: P5
+          column_net: P6
+        home:
+          bind: [0,0.5kx,0,0]
+          row_net: P2
+          column_net: P7
+        top:
+          bind: [0,0,0.5ky,0]
+          row_net: P0
+          column_net: P7
+        bottom.mirror:
+          row_net: P4
+          column_net: P9
+        home.mirror:
+          row_net: P3
+          column_net: P9
+        top.mirror:
+          row_net: P1
+          column_net: P9
+    columns.index:
+      spread: kx
+      stagger: -0.25ky
+      rows:
+        bottom:
+          bind: [0.5ky,0,0,0]
+          row_net: P4
+          column_net: P7
+        home:
+          row_net: P3
+          column_net: P7
+        top:
+          bind: [0,0,0.5ky,0.5kx]
+          row_net: P1
+          column_net: P7
+        bottom.mirror:
+          row_net: P5
+          column_net: P8
+        home.mirror:
+          row_net: P2
+          column_net: P9
+        top.mirror:
+          row_net: P0
+          column_net: P9
+    columns.inner:
+      spread: kx
+      stagger: -0.5ky
+      rows:
+        bottom.skip: true
+        home:
+          bind: [0.5ky,0,0.5ky,0.5kx]
+          row_net: P2
+          column_net: P8
+          tags:
+            center_top: true
+        top:
+          bind: [0,0,0.5ky,0.5kx]
+          row_net: P0
+          column_net: P8
+          tags:
+            center_top: true
+        home.mirror:
+          row_net: P3
+          column_net: P8
+        top.mirror:
+          row_net: P1
+          column_net: P8
+  zones.thumb:
+    anchor:
+      ref: matrix_index_bottom
+      shift: [0, -ky]
+    key:
+      tags:
+        thumb: true
+      footprints:
+        - type: choc
+          nets:
+            from: =row_net
+            to: =colrow
+          params:
+            keycaps: true
+        - type: diode
+          anchor:
+            shift: [0, -4.7]
+            rotate: 180
+          nets:
+            from: =colrow
+            to: =column_net
+          params:
+            via_in_pad: true
+            through_hole: false  
+    columns.tucky:
+      key:
+        name: thumb_tucky
+        bind: [ky, 0.5kx, 0, 0]
+        row_net: P5
+        column_net: P7
+      key.mirror:
+        row_net: P4
+        column_net: P10
+    columns.reachy:
+      spread: kx
+      stagger: -0.25ky
+      key:
+        name: thumb_reachy
+        bind: [1.5ky, 0, 0, 0]
+        row_net: P4
+        column_net: P8
+      key.mirror:
+        row_net: P5
+        column_net: P10
+outlines:
+  exports:
+    _outer_raw:
+      - type: keys
+        side: left
+        size: sf
+      - type: keys
+        side: right
+        size: sf
+    _center_raw:
+      - type: polygon
+        points:
+        - ref: matrix_inner_top
+          shift: &top_offset [0,5]
+        - ref: mirror_matrix_inner_top
+          shift: *top_offset
+        - ref: mirror_thumb_reachy
+        - ref: thumb_reachy
+      - type: keys
+        side: left
+        size: sf
+        tags: [center_top]  # Include the top center keys in addition to the center polygon
+      - type: keys
+        side: right
+        size: sf
+        tags: [center_top]
+    _panel:
+      - name: _center_raw
+        fillet: 3  # The inner rounding where the glue meets the top center keys
+      - operation: add
+        type: rectangle
+        anchor:
+          ref: [thumb_reachy, mirror_thumb_reachy]
+          shift: [-36, -5]
+        size: [72,5]
+      - name: _outer_raw
+    panel:
+      - name: _panel
+        fillet: 1.5
+    _switches:
+      - type: keys
+        side: left
+        size: 14
+        bound: false
+      - type: keys
+        side: right
+        size: 14
+        bound: false
+    demo_switches:
+      - name: panel
+      - operation: stack
+        name: _switches
+        fillet: 0.5
+    _keycaps:
+      - type: keys
+        side: left
+        size: [visual_x, visual_y]
+        bound: false
+        tags: [matrix]        
+      - type: keys
+        side: right
+        size: [visual_x, visual_y]
+        bound: false
+        tags: [matrix]
+      - type: keys
+        side: left
+        size: [visual_x, visual_y]
+        bound: false
+        tags: [thumb]        
+      - type: keys
+        side: right
+        size: [visual_x, visual_y]
+        bound: false
+        tags: [thumb]
+    demo_keycaps:
+      - name: panel
+      - operation: stack
+        name: _keycaps
+    _battery_mcu:
+      - operation: stack
+        type: rectangle
+        anchor:
+          ref: [thumb_reachy, mirror_thumb_reachy]
+          shift: [-20, 4]
+        size: [40, 12]
+      - operation: stack
+        type: rectangle
+        anchor:
+          ref: [thumb_reachy, mirror_thumb_reachy]
+          shift: [-15, 4]
+        size: [30, 12]
+      - operation: stack
+        type: rectangle
+        anchor:
+          ref: [thumb_reachy, mirror_thumb_reachy]
+          shift: [-17.5/2, 27]
+        size: [17.5, 21]
+    _battery_cover:
+      - operation: stack
+        type: polygon
+        points:
+        - ref: matrix_inner_home
+          shift: &bat_top [-8, -9.5]
+        - ref: matrix_inner_home
+          shift: &bat_top_1 [10, -9.5]
+        - ref: matrix_inner_home
+          shift: &bat_top_2 [10, 1]
+        - ref: mirror_matrix_inner_home
+          shift: *bat_top_2
+        - ref: mirror_matrix_inner_home
+          shift: *bat_top_1
+        - ref: mirror_matrix_inner_home
+          shift: *bat_top
+        - ref: mirror_thumb_reachy
+          shift: &bat_bottom [-8, 9.5]
+        - ref: mirror_thumb_reachy
+          shift: &bat_bottom_1 [10, 9.5]
+        - ref: mirror_thumb_reachy
+          shift: &bat_bottom_2 [10, -0.5]
+        - ref: thumb_reachy
+          shift: *bat_bottom_2
+        - ref: thumb_reachy
+          shift: *bat_bottom_1
+        - ref: thumb_reachy
+          shift: *bat_bottom
+    _battery_cover_2:
+      - operation: add
+        type: polygon
+        points:
+        - ref: matrix_inner_home
+          shift: &bat_top_1 [10, -9.5]
+        - ref: matrix_inner_home
+          shift: &bat_top_2 [10, 24.5]
+        - ref: mirror_matrix_inner_home
+          shift: *bat_top_2
+        - ref: mirror_matrix_inner_home
+          shift: *bat_top_1
+    battery_cover:
+      - operation: stack
+        name: _battery_cover
+        fillet: 1.5
+    battery_cover_full:
+      - name: battery_cover
+      - operation: add
+        name: _battery_cover_2
+        fillet: 1.5
+    _screws:
+      - operation: stack
+        type: circle
+        anchor:
+          ref: [thumb_reachy, matrix_inner_home]
+          shift: [-kx/6, 0]
+        radius: 1.75
+      - operation: stack
+        type: circle
+        anchor:
+          ref: [mirror_thumb_reachy, mirror_matrix_inner_home]
+          shift: [kx/6, 0]
+        radius: 1.75
+      - operation: stack
+        type: circle
+        anchor:
+          ref: [thumb_reachy, mirror_thumb_reachy]
+          shift: [0, 2]
+        radius: 1.75
+      - operation: stack
+        type: circle
+        anchor:
+          ref: [matrix_inner_top, mirror_matrix_inner_top]
+          shift: [0, 0]
+        radius: 1.75
+      - operation: stack
+        type: circle
+        anchor:
+          ref: [matrix_pinky_top]
+          shift: [kx/1.75, ky/5]
+        radius: 1.75
+      - operation: stack
+        type: circle
+        anchor:
+          ref: [mirror_matrix_pinky_top]
+          shift: [-kx/1.75, ky/5]
+        radius: 1.75
+    _bottom_panel:
+      - name: _panel
+      - operation: subtract
+        type: rectangle
+        anchor:
+          ref: [mirror_thumb_reachy, thumb_reachy]
+          shift: [kx/3, -6]
+        size: [18.5,8]
+    bottom_panel:
+      - name: _bottom_panel
+        fillet: 1.5
+    assembled:
+      - name: bottom_panel
+      - operation: stack
+        name: battery_cover
+      - operation: stack
+        name: _screws
+      - operation: stack
+        name: _battery_mcu
+pcbs:
+  Tlalocohyla_Smithii_bottom:
+    outlines:
+      main:
+        outline: bottom_panel
+      docs:
+        outline: assembled
+        layer: Dwgs.User
+    footprints:
+      jst:
+        type: jstph
+        anchor:
+          ref:
+            - thumb_reachy
+            - mirror_thumb_reachy
+          shift: [-kx/3, 1]
+          rotate: -90
+        nets:
+          pos: JSTplus
+          neg: Bminus
+  Tlalocohyla_Smithii_battery:
+    outlines:
+      main:
+        outline: battery_cover
+      docs:
+        outline: assembled
+        layer: Dwgs.User
+  Tlalocohyla_Smithii:
+    outlines:
+      main:
+        outline: panel
+      docs:
+        outline: assembled
+        layer: Dwgs.User
+    footprints:
+      slider:
+        type: slider
+        anchor:
+          ref:
+            - thumb_reachy
+            - mirror_thumb_reachy
+          shift: [1.1kx, -3]
+          rotate: 180
+        nets:
+          to: Bplus
+          from: JSTplus
+        params:
+          side: B
+      jst:
+        type: jstph
+        anchor:
+          ref:
+            - thumb_reachy
+            - mirror_thumb_reachy
+          shift: [-kx/3, 1]
+          rotate: -90
+        nets:
+          pos: JSTplus
+          neg: Bminus
+      pad_minus:
+        type: pad
+        anchor:
+          ref:
+            - matrix_inner_top
+            - mirror_matrix_inner_top
+          shift: [-kx/9, -ky/2]
+          rotate: 0
+        params:
+          front: true
+          back: false
+          width: 2
+          height: 2
+          text: "B-"
+        nets:
+          net: Bminus
+      pad_plus:
+        type: pad
+        anchor:
+          ref:
+            - matrix_inner_top
+            - mirror_matrix_inner_top
+          shift: [-kx/9, -ky/2-3]
+          rotate: 0
+        params:
+          front: true
+          back: false
+          width: 2
+          height: 2
+          text: "B+"
+        nets:
+          net: Bplus
+      pad_reset:
+        type: pad
+        anchor:
+          ref:
+            - matrix_inner_top
+            - mirror_matrix_inner_top
+          shift: [kx/9, -ky/2]
+          rotate: 0
+        params:
+          front: true
+          back: false
+          width: 2
+          height: 2
+          text: "RST"
+          align: "right"
+        nets:
+          net: RST_XIAO
+      pad_gnd:
+        type: pad
+        anchor:
+          ref:
+            - matrix_inner_top
+            - mirror_matrix_inner_top
+          shift: [kx/9, -ky/2-3]
+          rotate: 0
+        params:
+          front: true
+          back: false
+          width: 2
+          height: 2
+          text: "GND"
+          align: "right"
+        nets:
+          net: GND_XIAO
+      reset:
+        type: button
+        anchor:
+          ref:
+            - thumb_reachy
+            - mirror_thumb_reachy
+          shift: [kx/1.7, -1.5]
+          rotate: 0
+        nets:
+          from: RST_XIAO
+          to: GND_XIAO
+        params:
+          side: B
