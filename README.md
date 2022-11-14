@@ -5,13 +5,15 @@
 These keyboards were my inspiration:
 
 ```mermaid
-graph LR;
+graph TD;
+    Keyboards-->A;
+    Keyboards-->C;
     A[Horizon] --> B[ChocV];
-    click A "https://github.com/skarrmann/horizon" "Go to";
-    click B "https://github.com/brickbots/chocV" "Go to";
     C[Hummingbird] --> D[Rufous];
     B --> E[Smithii];
     D --> E[Smithii];
+    click A "https://github.com/skarrmann/horizon" "Go to";
+    click B "https://github.com/brickbots/chocV" "Go to";
     click C "https://github.com/PJE66/hummingbird" "Go to";
     click D "https://github.com/jcmkk3/trochilidae" "Go to";
 ```
